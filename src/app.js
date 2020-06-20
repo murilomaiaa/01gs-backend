@@ -67,12 +67,36 @@ app.put("/repositories/:id", (req, res) => {
   return res.json(repository);
 });
 
-app.delete("/repositories/:id", (request, response) => {
-  // TODO
+app.delete("/repositories/:id", (req, res) => {
+  const { id } = req.params;
+
+  const repoIndex = repositories.findIndex((repository) => repository.id == id);
+
+  if (repoIndex < 0) {
+    return res.status(400).json({ error: "Id doesn't exists" });
+  }
+
+  const repository = repositories[repoIndex];
+
+  repositories.splice(repoIndex, 1);
+
+  return res.status(204).send();
 });
 
-app.post("/repositories/:id/like", (request, response) => {
-  // TODO
+app.post("/repositories/:id/like", (req, res) => {
+  const { id } = req.params;
+
+  const repoIndex = repositories.findIndex((repository) => repository.id == id);
+
+  if (repoIndex < 0) {
+    return res.status(400).json({ error: "Id doesn't exists" });
+  }
+
+  let repository = repositories[repoIndex];
+  repository.likes++;
+  repositories[repoIndex] = repository;
+
+  return res.json(repository);
 });
 
 module.exports = app;
